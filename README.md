@@ -1,70 +1,61 @@
-# Getting Started with Create React App
+# ChatX Reactjs Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Descripción
 
-## Available Scripts
+Proyecto de API REST para front de prueba construido con ReactJS, ofrece lo siguiente:
 
-In the project directory, you can run:
+* Login basico
+* Home con chat
+* WebSockets para los eventos de usuarios online/offline
+* WebSockets para los eventos de envíos de mensajes
 
-### `npm start`
+## Configuración
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Se requiere tener desplegado previamente el backend, para eso consulte la documentación en el siguiente link [github](https://github.com/jcperezz/backend-chatx)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1. Siga las instrucciones para el backend
+2. Edite el archivo .env.[ambiente] con las URLs del backend
 
-### `npm test`
+## Instalación
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+$ npm install
+```
 
-### `npm run build`
+## Ejecutar la APP
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+`npm start`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Una vez ejecutado la APP se puede acceder desde la url:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+http://localhost:3000
+```
 
-### `npm run eject`
+## Docker
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+El proyecto contiene lo necesario para su despliegue en un contenedor docker, para eso:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. Desde la raíz del proyecto ejecute el siguiente comando:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+   ```powershell
+   docker build -t chatx/frontend-reactjs-chatx .
+   ```
+2. Luego corra la imagen de la siguiente manera
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```shell
+docker run -p3000:3000 chatx/frontend-reactjs-chatx
+```
 
-## Learn More
+## Stay in touch
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Autor - Juan Carlos Perez Zapata
+- LinkedIn - [juan-carlos-perez](www.linkedin.com/in/juan-carlos-perez)
+- Email - jcarlosp1986@gmail.com
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## License
 
-### Code Splitting
+Nest is [MIT licensed](LICENSE).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+[circleci-url]: https://circleci.com/gh/nestjs/nest
