@@ -1,0 +1,173 @@
+import './conversation.css';
+
+// react core
+import React, { ChangeEvent, useState, useContext, useEffect } from 'react';
+
+// bootstrap
+import { useForm } from 'react-hook-form';
+
+// context
+import { Context } from '../../../context/AppContext.jsx';
+
+//Services
+import RoomsService from '../../../services/RoomsService.ts';
+
+//types
+import RoomWithMessages from '../../../types/RoomWithMessages.ts';
+import Message from '../../../types/Message.ts';
+import User from '../../../types/User.ts';
+
+interface ConversationProps {
+    readonly userId: string;
+    readonly ownerNick: string;
+    readonly roomId: string;
+    readonly onlineUsers: Promise<User>[];
+}
+
+interface IFormInput {
+    nick: string,
+}
+
+const Conversation: React.FC<ConversationProps> = ({ userId, ownerNick, roomId, onlineUsers }) => {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<IFormInput>();
+
+    const { setUser } = useContext(Context);
+    const [room, setRoom] = useState<RoomWithMessages>({});
+    const [users, setUsers] = useState<User[]>();
+
+    const loadOnlineUsers = () => {
+        const users = Promise.all(onlineUsers)
+            .then(responses => Promise.all(responses.map(response => response)))
+            .then(data => setUsers(data))
+            .catch(error => {
+                console.error('Error al resolver las promesas:', error);
+            });
+        
+    }
+
+
+    useEffect(() => {
+        RoomsService.getRoomById(roomId)
+            .then(data => setRoom(data))
+            .catch(error => console.log('error al llamar al servicio', error));
+
+        loadOnlineUsers();
+
+        // Si necesitas limpiar algo cuando el componente se desmonta, puedes devolver una función de limpieza.
+        return () => {
+            console.log('Conversacion se ha desmontado');
+        };
+    }, []); // El array de dependencias vacío asegura que este efecto se ejecute solo una vez.
+
+    // manejo de errores
+    const [showToast, setShowToast] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const toggleToast = () => setShowToast(!showToast);
+
+
+    const onSubmit = async () => {
+
+    };
+
+    return (
+        <section style={{ backgroundColor: '#CDC4F9' }}>
+            <div className='container py-5'>
+                <div className='row'>
+                    <div className='col-md-12'>
+
+                        <div className='card' id='chat3' style={{ borderRadius: '15px' }}>
+                            <div className='card-body'>
+                                <div className='row'>
+                                    <div className='col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0 rounded' style={{ backgroundColor: '#F5F5F5' }}>
+
+                                        <div className='p-3'>
+                                            <div className='input-group rounded mb-3'>
+                                                <input type='search' className='form-control rounded' placeholder='Search' aria-label='Search'
+                                                    aria-describedby='search-addon' />
+                                                <span className='input-group-text border-0' id='search-addon'>
+                                                    <i className='fas fa-search'></i>
+                                                </span>
+                                            </div>
+
+                                            {users?.map((onlineUser) => (
+
+                                                <div data-mdb-perfect-scrollbar-init style={{ position: 'relative', height: '400px' }}>
+                                                    <ul className='list-unstyled mb-0'>
+                                                        <li className='p-2 border-bottom'>
+                                                            <a href='#!' className='d-flex justify-content-between' style={{ textDecoration: 'none' }}>
+                                                                <div className='d-flex flex-row'>
+                                                                    <div>
+                                                                        <img
+                                                                            src='https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp'
+                                                                            alt='avatar' className='d-flex align-self-center me-3' width='60'>
+                                                                        </img>
+                                                                        <span className='badge bg-success badge-dot'></span>
+                                                                    </div>
+                                                                    <div className='pt-1'>
+                                                                        <p className='fw-bold mb-0'>{onlineUser.nick}</p>
+                                                                        <p className='small text-muted'>Hello, Are you there?</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div className='pt-1'>
+                                                                    <p className='small text-muted mb-1'>Just now</p>
+                                                                    <span className='badge bg-danger rounded-pill float-end'>3</span>
+                                                                </div>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            ))}
+
+
+
+                                        </div>
+
+                                    </div>
+
+                                    <div className='col-md-6 col-lg-7 col-xl-8 bg-secondary rounded'>
+
+                                        <div className='pt-3 pe-3' data-mdb-perfect-scrollbar-init
+                                            style={{ position: 'relative', height: '400px' }}>
+
+                                            {room.messages?.map((message: Message) => (
+                                                <div className={'d-flex flex-row justify-content-start' + (message.senderId === userId ? ' justify-content-end' : '')}>
+                                                    <img src='https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp'
+                                                        alt='avatar 1' style={{ width: '45px', height: '100%' }}>
+                                                    </img>
+                                                    <div>
+                                                        <p className={'small p-2 ms-3 mb-1 rounded-3' + (message.senderId === userId ? ' text-white bg-primary' : '')} style={{ backgroundColor: (message.senderId === userId ? ' #3B71CA' : '#f5f6f7') }}>{message.content}</p>
+                                                        <p className='small ms-3 mb-3 rounded-3 text-muted float-end'>12:00 PM | Aug 13</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+
+                                            <div className='text-muted d-flex justify-content-start align-items-center pe-3 pt-3 mt-2'>
+                                                <img src='https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp'
+                                                    alt='avatar 3' style={{ width: '40px', height: '100%' }}></img>
+                                                <input type='text' className='form-control form-control-lg' id='exampleFormControlInput2'
+                                                    placeholder='Type message' />
+                                                <a className='ms-1 text-muted' href='#!'><i className='fas fa-paperclip'></i></a>
+                                                <a className='ms-3 text-muted' href='#!'><i className='fas fa-smile'></i></a>
+                                                <a className='ms-3' href='#!'><i className='fas fa-paper-plane'></i></a>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    );
+}
+
+export default Conversation;
